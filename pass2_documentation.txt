@@ -1,0 +1,10 @@
+The pass two of my SIC assembler was built using structs for each record type and linked list for the data structure. The records are all held within a "sic_scoff_records" struct. This struct will hold a header record,
+a linked list of text records, a linked list of modification records, and lastly an end record. These records all hold character arrays with enough room for each particular column. The reason that i used seperate character arrays 
+instead of a big buffer was that it made the code more modular and readable. The reasoning behind using a double ended singly linked list was because i wanted O(1) insertion and didn't want to reallocate when i ran out of room. 
+I could have kept track of how many t-records and m-records i would need in pass one but i figured linked lists would be fine. 
+The pass 2 loop was very similar in structure to pass 1. It didn't need nearly as many checks in pass 2 because all of the checks in pass 1 guranteed that i can assume certain things when parsing the lines in pass 2. 
+Only checks that i did in pass two was ensuring that symbols refernced by an instruction existed in the symbol table and that malloc returned a valid pointer. 
+
+There are certain things that i have not implemented in my pass two which would be nice to have. One is the compression of t-records where the t-record uses as many of the 60 characters of space allocated for the object code. 
+Currently my implementation splits them up for every instruction/directive. The second thing i need to check is if the symbol referenced by the END directive is an actual instruction and not a directive. 
+If one is not given, i assign the first executable address to the first instruction found in pass 2. If no executable instructions were found, i throw an error.

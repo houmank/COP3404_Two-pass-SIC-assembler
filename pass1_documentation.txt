@@ -1,0 +1,18 @@
+The pass one of my SIC assembler is designed using hash tables as the backbone. The hash table data structure is used for the machine opcode table, directive table, and symbol table.
+The hash table does not allow for duplicate keys, it will malloc its own copy of keys but will not copy the value pointer. The hash table uses open addressing with quadratic probing for efficiency.
+Pass one of the SIC assembler first constructs the machine opcode table (MOT) which holds the key-value of {mnumonic, sic_optable_values}. The struct contains the opcode, size, number of operands, and flags. 
+Next, it will construct a directive table that uses the directive as a key and a directive_cb_struct as the value. The directive_cb_struct is just a wrapper for a function pointer. I did this because ANSI C doesn't want 
+function pointers to be cast to void*. The reason that a callback is used is so when a valid directive is parsed, 
+it will be grabbed from the hash table and called using a standardized function pointer. Both the op-table and directive-table will be used when constructing the symbol table.
+
+The symbol table itself will do error checking and print error messages whenever something goes wrong with cascading typedef enums. 
+Each table will have its own set of enum flags for error checking. The enum that will be used the most during pass one is the directive_callback_status and sic_symbol_status.
+The symbol table will contain a start address, end address, location counter, and a hash table that holds the KV {symbol, symbolAddress}. symbolAddress is a uin32_t type.
+Once a valid symbol has been identified, sanitized for bad characters, and processed via either directive_callback or instruction then it will insert into the symbol_table->ht and print "{symbol}\t{symbolAddress}\n" to stdout.
+
+Note that the error messages are printed out in the following format: [ERROR : (Line Number)]: (Message associated with error).\n
+The stderr output will not give a copy of the line where the error occurred to avoid having a strncpy of the line.
+The goto statements I was going to use in the main function to handle errors were changed in favor of structured if-else blocks with an error code enum.
+After reading http://david.tribble.com/text/goto.html, It seemed like the downsides associated with goto are not worth getting into the habit of using it. So I use a cleanup_code enum
+now and use that in a switch block to clear all the allocated memory before exiting.
+
