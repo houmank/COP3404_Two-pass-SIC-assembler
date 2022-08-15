@@ -1,5 +1,6 @@
 # Two pass SIC Assembler
- 
+
+![Build Status](https://img.shields.io/github/workflow/status/houmank/COP3404_Two-pass-SIC-assembler/C%20CI)
 
 ## About
 This was a project done during my systems programming course. The program is a two-pass assembler that generates object code when given SIC assembly. It was done in two passes so that the assembler would allow for forwarding referencing in the assembly file. The project was done in C to allow for low-level memory access and efficiency.
